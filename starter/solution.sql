@@ -1,6 +1,3 @@
--- Employee table is already provided for you.
--- Do NOT modify the table structure.
-
 DROP TABLE IF EXISTS Employee;
 
 CREATE TABLE Employee (
@@ -10,25 +7,15 @@ CREATE TABLE Employee (
     salary DECIMAL(10,2)
 );
 
--- =========================================================
--- TASK
--- =========================================================
--- Create a trigger that automatically displays a message
--- after a new employee record is inserted into Employee.
---
--- Expected message format:
---
--- Employee inserted: <employee_name>
---
--- Example:
--- Employee inserted: Arun
---
--- Write your trigger below.
--- =========================================================
+CREATE OR REPLACE FUNCTION employee_insert_message()
+RETURNS TRIGGER AS $$
+BEGIN
+    RAISE NOTICE 'Employee inserted: %', NEW.emp_name;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-
--- YOUR CODE STARTS HERE
-
-
-
--- YOUR CODE ENDS HERE
+CREATE TRIGGER employee_after_insert
+AFTER INSERT ON Employee
+FOR EACH ROW
+EXECUTE FUNCTION employee_insert_message();
